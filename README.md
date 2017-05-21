@@ -3,7 +3,7 @@ nhk-stream - Downloading NHK Gogaku streaming musics
 
 [![licence badge]][licence]
 
-nhk-stream is a CLI tools for downloading NHK Gogaku streaming musics.
+nhk-stream is a CLI tool for downloading NHK Gogaku streaming musics. The tool requires ffmpeg package.
 
 # Install
 
