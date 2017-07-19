@@ -3,12 +3,11 @@ import traceback
 from argparse import ArgumentParser
 from enum import unique, Enum
 from os import makedirs
-from os.path import join, isdir
+from os.path import join, isdir, isfile
 from subprocess import check_call
 from xml.etree import ElementTree
 
-from requests import HTTPError
-from requests import Session
+from requests import Session, HTTPError
 
 
 @unique
@@ -54,31 +53,39 @@ if __name__ == '__main__':
     session = Session()
 
     try:
-        # Get data list xml file
+        # Gets information of the music items from XML files
         musics = dict()
         for name in args.music:
             resp = session.get("https://cgi2.nhk.or.jp/gogaku/st/xml/{}/listdataflv.xml".format(Music[name].value))
+            # Checks a status code of the response
             if resp.status_code != 200:
                 raise HTTPError("Invalid URL [{}]".format(resp.url), response=resp)
 
             root = ElementTree.fromstring(resp.content.decode())
+            # Gets attributes of the music items
             musics[name] = [dict(title=e.get('title'), hdate=e.get('hdate'), kouza=e.get('kouza'), code=e.get('code'),
                                  file=e.get('file'), nendo=e.get('nendo'), pgcode=e.get('pgcode')) for e in root.iter('music')]
 
-        # Execute ffmpeg
+        # Runs a loop of proceeding the music items
         for name, data_list in musics.items():
 
-            # Make music files directory
+            # Makes a directory of the music items
             dir_name = join(args.directory, name)
             if not isdir(dir_name):
                 makedirs(dir_name)
 
+            # Runs a loop of downloading the music files
             for data in data_list:
                 file = join(args.directory, name, "{}_{}_{}.mp3".format(data['title'], data['nendo'], data['hdate']))
-                if isdir(file) and args.force:
+                # Checks the overwrite option
+                if isfile(file) and not args.force:
+                    # Skips the overwrite process
+                    print('Skip Downloading {}'.format(file))
                     continue
                 url = "https://nhk-vh.akamaihd.net/i/gogaku-stream/mp4/{}/master.m3u8".format(data['file'])
-                check_call(["ffmpeg", "-y", "-i", url, "-ab", "64k", "-id3v2_version", "3", file])
+                # Downloads the music file with ffmpeg
+                print('Download {}'.format(file))
+                check_call(["ffmpeg", "-loglevel", "panic", "-y", "-i", url, "-ab", "64k", "-id3v2_version", "3", file])
 
         exit(0)
 
