@@ -85,7 +85,7 @@ if __name__ == '__main__':
                 url = "https://nhk-vh.akamaihd.net/i/gogaku-stream/mp4/{}/master.m3u8".format(data['file'])
                 # Downloads the music file with ffmpeg
                 print('Download {}'.format(file))
-                check_call(["ffmpeg", "-loglevel", "panic", "-y", "-i", url, "-ab", "64k", "-id3v2_version", "3", file])
+                check_call(["ffmpeg", "-loglevel", "panic", "-nostdin", "-y", "-i", url, "-ab", "64k", "-id3v2_version", "3", file])
 
         exit(0)
 

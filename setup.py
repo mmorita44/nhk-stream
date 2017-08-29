@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='nhk-stream',
-    version='1.0.1',
+    version='1.0.2',
     description='Download mp4 files from NHK Online Streaming.',
     url='https://bitbucket.org/mmorita44/nhk-stream',
     author='Masato Morita',
