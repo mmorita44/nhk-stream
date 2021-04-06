@@ -25,7 +25,7 @@ class Music(Enum):
     yomu = 'english/yomu'
     enjoy = 'english/enjoy'
     chinese = 'chinese/kouza'
-    chinese_levelup = 'chinese/levelup'
+    chinese_stepup = 'chinese/stepup'
     hangeul = 'hangeul/kouza'
     hangeul_levelup = 'hangeul/levelup'
     italian = 'italian/kouza'
